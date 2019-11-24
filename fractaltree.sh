@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-
-echo "How Many Trees? [1-5]"
-read tree
-
 maxcol=100
 maxrow=63
+maxtrees=6
+
+echo "How Many Trees? [1-$maxtrees]"
+read tree
 let "branches=2**$tree"
-let "treesize=(2**(6-$tree)) / 2"
+let "treesize=(2**($maxtrees-$tree)) / 2"
 count=0
 branchop="+1"
 treeflag=0
@@ -15,7 +15,7 @@ treeflag=0
 leftbranchstart=$(( ($maxcol / 2) - (($branches-1) * ($treesize))  ))
 rightbranchend=$(( ($maxcol / 2) + (($branches-1) * ($treesize)) ))
 leftbranchend=$(((($maxcol / 2)-$treesize)))
-rightbranchstart=$((($maxcol /2)+$treesize))
+rightbranchstart=$((($maxcol / 2)+$treesize))
 
 for x in $(seq $leftbranchstart $(($treesize*2)) $leftbranchend); do
 	branchpositions[$i]=$x
@@ -29,7 +29,7 @@ for x in $(seq $rightbranchstart $(($treesize*2)) $rightbranchend); do
         let i+=1
 done
 
-for row in {1..63}; do
+for row in $(seq 1 1 $maxrow); do
 
         if [ $treeflag -eq 1 ]; then let count+=1; fi
 
@@ -59,8 +59,8 @@ for row in {1..63}; do
         	done
 	fi
 
-	for col in {1..100}; do
-		if [ $row -ge $((2**(6-$tree))) ] && [ $row -lt $(((2**(6-$tree))+$treesize)) ]; then 
+	for col in $(seq 1 1 $maxcol); do
+		if [ $row -ge $((2**($maxtrees-$tree))) ] && [ $row -lt $(((2**($maxtrees-$tree))+$treesize)) ]; then 
 			treeflag=1		
 			for i in ${branchpositions[@]}; do
 				if [ $col -eq $i ]; then
@@ -74,7 +74,7 @@ for row in {1..63}; do
 			printf $printchar	
 			printchar="_"
 
-		elif [ $row -ge $(((2**(6-$tree)+$treesize))) ] && [ $row -lt $(( (2**(6-$tree))+$treesize*2 )) ]; then
+		elif [ $row -ge $(((2**($maxtrees-$tree)+$treesize))) ] && [ $row -lt $(( (2**($maxtrees-$tree))+$treesize*2 )) ]; then
 			treeflag=2
 			count=0
 			for i in ${branchpositions[@]}; do
@@ -88,7 +88,7 @@ for row in {1..63}; do
 			printf $printchar
 			printchar="_"
 
-		elif [ $row -lt $((2**(6-$tree))) ]; then
+		elif [ $row -lt $((2**($maxtrees-$tree))) ]; then
 			printf '_'
 			treeflag=0
 		else	
@@ -97,7 +97,7 @@ for row in {1..63}; do
 			fi
 			let tree-=1
 			let "branches=2**$tree"
-			let "treesize=(2**(6-$tree)) / 2"	
+			let "treesize=(2**($maxtrees-$tree)) / 2"	
 			treeflag=0
 
 			unset branchpositions
@@ -124,5 +124,3 @@ for row in {1..63}; do
 	echo
 
 done
-
-
